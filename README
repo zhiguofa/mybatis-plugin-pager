@@ -1,0 +1,24 @@
+#maven依赖
+
+
+
+#dao接口增加page参数即可
+public interface PscanDao {
+    List<User> getUserList(Page page);
+}
+
+
+
+#mapper文件,不需要指定limit关键字,插件根据dao接口中的page参数自动添加分页查询参数
+    select
+        u.username,
+        u.email
+    from user u
+    where u.age > #{age}
+
+
+
+#mybatis 配置文件
+<plugins>
+    <plugin interceptor="cn.sskxyz.mybatis.PagePlugin"></plugin>
+</plugins>
