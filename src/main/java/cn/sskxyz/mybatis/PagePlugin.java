@@ -37,36 +37,39 @@ public class PagePlugin implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         if ("query".equals(invocation.getMethod().getName())) {
             Object daoArgObj = invocation.getArgs()[1];
-            if (daoArgObj instanceof Map) {
+            Object pageObj = null;
+            if (daoArgObj instanceof Page) {
+                pageObj = daoArgObj;
+            } else if (daoArgObj instanceof Map) {
                 Map<String, Object> daoArgs = (Map<String, Object>) daoArgObj;
                 if (daoArgs != null && daoArgs.size() > 0) {
-                    Object pageObj = daoArgs.values().stream().filter(obj -> obj instanceof Page).findFirst().orElse(null);
-                    if (pageObj != null) {
-                        MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
-                        Object parameterObj = invocation.getArgs()[1];
-                        Object rowBounds = invocation.getArgs()[2];
-                        Object resultHandler = invocation.getArgs()[3];
-
-                        Configuration configuration = ms.getConfiguration();
-                        BoundSql boundSql = ms.getBoundSql(parameterObj);
-
-                        String countSql = pageDialect.countSql(boundSql.getSql());
-                        PageContext context = new PageContext();
-                        context.setPage((Page) pageObj);
-                        context.setCountSql(countSql);
-                        pageContextHolder.set(context);
-
-                        String pageSql = pageDialect.pageSql(boundSql.getSql(), context.getPage());
-                        SqlSource sqlSource = new StaticSqlSource(configuration, pageSql, boundSql.getParameterMappings());
-                        MappedStatement.Builder builder = new MappedStatement.Builder(configuration, ms.getId(), sqlSource, ms.getSqlCommandType());
-                        builder.resultMaps(ms.getResultMaps());
-                        builder.cache(ms.getCache());
-                        builder.databaseId(ms.getDatabaseId());
-                        builder.fetchSize(ms.getFetchSize());
-                        builder.resource(ms.getResource());
-                        return invocation.getMethod().invoke(invocation.getTarget(), builder.build(), parameterObj, rowBounds, resultHandler);
-                    }
+                    pageObj = daoArgs.values().stream().filter(obj -> obj instanceof Page).findFirst().orElse(null);
                 }
+            }
+            if (pageObj != null) {
+                MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
+                Object parameterObj = invocation.getArgs()[1];
+                Object rowBounds = invocation.getArgs()[2];
+                Object resultHandler = invocation.getArgs()[3];
+
+                Configuration configuration = ms.getConfiguration();
+                BoundSql boundSql = ms.getBoundSql(parameterObj);
+
+                String countSql = pageDialect.countSql(boundSql.getSql());
+                PageContext context = new PageContext();
+                context.setPage((Page) pageObj);
+                context.setCountSql(countSql);
+                pageContextHolder.set(context);
+
+                String pageSql = pageDialect.pageSql(boundSql.getSql(), context.getPage());
+                SqlSource sqlSource = new StaticSqlSource(configuration, pageSql, boundSql.getParameterMappings());
+                MappedStatement.Builder builder = new MappedStatement.Builder(configuration, ms.getId(), sqlSource, ms.getSqlCommandType());
+                builder.resultMaps(ms.getResultMaps());
+                builder.cache(ms.getCache());
+                builder.databaseId(ms.getDatabaseId());
+                builder.fetchSize(ms.getFetchSize());
+                builder.resource(ms.getResource());
+                return invocation.getMethod().invoke(invocation.getTarget(), builder.build(), parameterObj, rowBounds, resultHandler);
             }
         }
 
