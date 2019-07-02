@@ -6,8 +6,7 @@ public class MysqlPageDialect implements PageDialect {
 
     @Override
     public String countSql(String sql) {
-        int idx = sql.toLowerCase().indexOf("from");
-        return "select count(*)  " + sql.substring(idx);
+        return "select count(*) from (" + sql + ")t";
     }
 
     @Override
