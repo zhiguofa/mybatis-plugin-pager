@@ -8,6 +8,8 @@
     <artifactId>mybatis-plugin-pager</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+    <name>mybatis-plugin-pager</name>
+    <url>https://github.com/zhiguofa/mybatis-plugin-pager</url>
 
 
     <description>
@@ -16,9 +18,18 @@
     </description>
 
     <scm>
-        <url>http://github.com/sskxyz/mybatis-plugin-pager</url>
+        <url>https://github.com/zhiguofa/mybatis-plugin-pager.git</url>
         <connection>https://github.com/zhiguofa/mybatis-plugin-pager.git</connection>
     </scm>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <properties>
         <jdk.version>1.8</jdk.version>
@@ -30,8 +41,16 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.5.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <developers>
+        <developer>
+            <name>zhiguofa</name>
+            <email>zhiguofa@sina.com</email>
+        </developer>
+    </developers>
 
     <build>
         <plugins>
@@ -77,6 +96,18 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -94,4 +125,64 @@
             </resource>
         </resources>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
