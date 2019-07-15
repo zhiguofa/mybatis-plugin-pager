@@ -2,17 +2,11 @@ package cn.sskxyz.mybatis.dialect;
 
 import cn.sskxyz.mybatis.mode.Page;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DelegatingPageDialect implements PageDialect {
 
-    private final String idForPage;
-
-    private final Map<String, PageDialect> pageDialectMap;
-
     private final PageDialect pageDialect;
-
 
     public DelegatingPageDialect(String idForPage, Map<String, PageDialect> pageDialectMap) {
         if (idForPage == null) {
@@ -22,8 +16,6 @@ public class DelegatingPageDialect implements PageDialect {
             throw new IllegalArgumentException("idForPage " + idForPage + "没有找到分页方言");
         }
 
-        this.idForPage = idForPage;
-        this.pageDialectMap = new HashMap<>(pageDialectMap);
         this.pageDialect = pageDialectMap.get(idForPage);
     }
 
