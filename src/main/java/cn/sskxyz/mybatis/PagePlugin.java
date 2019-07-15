@@ -1,7 +1,7 @@
 package cn.sskxyz.mybatis;
 
-import cn.sskxyz.mybatis.dialect.MysqlPageDialect;
 import cn.sskxyz.mybatis.dialect.PageDialect;
+import cn.sskxyz.mybatis.dialect.PageDialectFactory;
 import cn.sskxyz.mybatis.mode.Page;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.executor.Executor;
@@ -108,6 +108,11 @@ public class PagePlugin implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
-        this.pageDialect = new MysqlPageDialect();
+        String dialect = properties.getProperty("dialect");
+        if (dialect != null && !dialect.isEmpty()) {
+            this.pageDialect = PageDialectFactory.createPageDialect(dialect);
+        } else {
+            this.pageDialect = PageDialectFactory.createPageDialect();
+        }
     }
 }
