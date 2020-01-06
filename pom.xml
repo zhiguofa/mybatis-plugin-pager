@@ -6,7 +6,7 @@
 
     <groupId>cn.sskxyz</groupId>
     <artifactId>mybatis-plugin-pager</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>mybatis-plugin-pager</name>
     <url>https://github.com/zhiguofa/mybatis-plugin-pager</url>
