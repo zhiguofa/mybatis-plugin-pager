@@ -11,6 +11,10 @@ public class Page<T> {
         this.pageSize = pageSize;
     }
 
+    public Page() {
+        this(1, 10);
+    }
+
     public Long getTotal() {
         return total;
     }
